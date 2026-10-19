@@ -1,0 +1,154 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "The Lovász Local Lemma and two applications"
+  description: >-
+    A Lean 4 / Mathlib formalization of the Lovász Local Lemma for finitely many events in a
+    probability space with a dependency graph (each event mutually independent, in the sense of
+    Mathlib's `ProbabilityTheory.Indep` of generated σ-algebras, of its non-neighbours), in its
+    general form (P(A_i) ≤ x_i ∏_{j∼i}(1 − x_j) implies P(no event) ≥ ∏(1 − x_i)) and its symmetric
+    form (e p (d + 1) ≤ 1 implies P(no event) > 0); and of two applications: Spencer's Ramsey lower
+    bound (if 2e(C(k,2)C(n,k−2) + 1) ≤ 2^C(k,2) then R(k,k) > n) and the Erdős–Lovász property B
+    theorem for k-uniform hypergraphs (each edge meeting at most d others with e(d + 1) ≤ 2^(k−1);
+    and the case where every vertex lies in at most k edges, for k ≥ 9). Mathlib has independence
+    and product measures but not the Local Lemma.
+  authors:
+    - "Juan Pablo Traverso Gianini"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Juan Pablo Traverso Gianini"
+
+classification:
+  arxiv: ["math.CO", "math.PR"]
+  msc2020: ["05D40", "05C55", "05C15", "60C05"]
+
+sources:
+  - title: "Problems and results on 3-chromatic hypergraphs and some related questions"
+    authors:
+      - "P. Erdős"
+      - "L. Lovász"
+    type: "paper"
+    location: "Infinite and Finite Sets (Colloq. Keszthely, 1973), Colloq. Math. Soc. János Bolyai 10, North-Holland (1975), 609–627"
+    relationship: "formalizes"
+    note: "The Local Lemma and the property B application; no DOI."
+    license: "unknown"
+    author_endorsement: "n/a"
+  - title: "Asymptotic lower bounds for Ramsey functions"
+    authors:
+      - "Joel Spencer"
+    id: "doi:10.1016/0012-365X(77)90044-9"
+    type: "paper"
+    location: "Discrete Mathematics 20 (1977), 69–76"
+    relationship: "formalizes"
+    note: "The general form of the Local Lemma and the Ramsey lower bound."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+  - title: "The Probabilistic Method (3rd edition)"
+    authors:
+      - "Noga Alon"
+      - "Joel H. Spencer"
+    id: "doi:10.1002/9780470277331"
+    type: "book"
+    location: "Wiley (2008), Chapter 5"
+    relationship: "background"
+    note: "Textbook proof followed."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+
+status:
+  scope: >-
+    The general and symmetric Local Lemma are proved for any probability measure and any finite
+    family of measurable events indexed by Fin n with a dependency graph; Spencer's bound for all
+    n and k satisfying the stated inequality (the asymptotic form R(k,k) > (√2/e)(1 + o(1)) k 2^(k/2)
+    is not stated); property B for every finite k-uniform hypergraph on any vertex type satisfying
+    the stated inequality, and for k ≥ 9 under the vertex-degree bound k. The lopsided and
+    algorithmic (Moser–Tardos) versions are not formalized.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "autonomous"
+      models: ["Aristotle (Harmonic)"]
+      framework: "Aristotle CLI"
+      tool_setup: >-
+        Produced all proofs in one run from the formal statements and a proof plan (strong
+        induction on the conditioning set, random colourings by fair coins, degree counting); it
+        chose x_i = 1/(d + 2) for the symmetric form. The return was audited (statements,
+        definitions and headers unchanged, no added axioms) and rebuilt locally.
+      cost:
+        wall_time: "about one hour"
+        spend_usd: "not tracked"
+        hardware: "API-only"
+      prompting_notes: "Formal statements and proof plan supplied."
+    - method: "agent"
+      models: ["Claude Opus 5.5"]
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        Statement design (the numerical conditions were checked to be satisfiable), proof plan,
+        integration and review of the Aristotle return, and the Palomar packaging, checked with
+        `lake build`, `#print axioms` and a comparison of the elaborated Challenge and Solution
+        declarations (Lean v4.35.0-rc3, Mathlib c55e6e786f49471c72fbddbec5415808896aec1e).
+      cost:
+        wall_time: "about one hour"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "Natural-language instructions in Spanish, directed by the author."
+  spend_usd: "subscription-based"
+  notes: >-
+    The results were chosen by the human author; the Lean proofs are AI-generated and
+    mechanically verified (no `sorry`, axioms limited to propext, Classical.choice and Quot.sound,
+    identical elaborated types and definitions for the Challenge/Solution pair).
+
+fidelity:
+  divergences: >-
+    Events are indexed by Fin n; probabilities are `Measure.real` of a probability measure. The
+    dependency graph condition is mutual independence in Mathlib's sense: `Indep` of the
+    σ-algebra generated by {A i} and the σ-algebra generated by the events A j with j ≠ i not
+    adjacent to i. Spencer's bound is stated with the explicit condition
+    2e(C(k,2)C(n,k−2) + 1) ≤ 2^C(k,2) (natural-number subtraction in k − 2) and its conclusion as
+    a graph G on Fin n with G and its complement both K_k-free. A hypergraph is a finset of finsets
+    of vertices; "meets" means not disjoint; 2-colourable means a map to Bool with no constant edge.
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "Claude Opus 5.5 (AI agent in Claude Code, acting for the author)"
+  notes: >-
+    Agent review by Claude Opus 5.5, distinct from the mechanical verification: the agent compared
+    the statements with the Local Lemma and its applications, checked that the numerical
+    conditions are satisfiable, checked that the Aristotle return left every statement, definition
+    and header unchanged, and confirmed by `lake build`, `#print axioms` and a comparison of the
+    fully elaborated Challenge and Solution declarations that the proofs use no `sorry` and only
+    propext, Classical.choice and Quot.sound. The author directed the work and approved the
+    statements. No independent human mathematical review has been performed. The results are
+    classical; no mathematical novelty is claimed.
+
+alignment:
+  namespace: "LovaszLocalLemma"
+  statements:
+    - source: "Lovász Local Lemma, general form (Erdős–Lovász 1975; Spencer 1977)"
+      lean: "LovaszLocalLemma.lll"
+      module: "Challenge"
+      status: "proved"
+    - source: "Lovász Local Lemma, symmetric form"
+      lean: "LovaszLocalLemma.lll_symmetric"
+      module: "Challenge"
+      status: "proved"
+    - source: "Spencer (1977): Ramsey lower bound"
+      lean: "LovaszLocalLemma.ramsey_lower"
+      module: "Challenge"
+      status: "proved"
+    - source: "Erdős–Lovász (1975): property B"
+      lean: "LovaszLocalLemma.propertyB"
+      module: "Challenge"
+      status: "proved"
+    - source: "Property B for k-uniform hypergraphs with vertex degree at most k (k ≥ 9)"
+      lean: "LovaszLocalLemma.propertyB_regular"
+      module: "Challenge"
+      status: "proved"
+
+acknowledgements: >-
+  Mathlib and the Lean community; Harmonic's Aristotle.

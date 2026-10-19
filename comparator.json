@@ -1,0 +1,18 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "LovaszLocalLemma.lll",
+    "LovaszLocalLemma.lll_symmetric",
+    "LovaszLocalLemma.ramsey_lower",
+    "LovaszLocalLemma.propertyB",
+    "LovaszLocalLemma.propertyB_regular"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
